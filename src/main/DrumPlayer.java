@@ -39,7 +39,6 @@ public class DrumPlayer extends JFrame {
 	*/
 	public static void main(String[] args){
 		//set up the GUI
-		new Splash();
 		final JFrame jFrame = new DrumPlayer();    
 		jFrame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		jFrame.pack();
