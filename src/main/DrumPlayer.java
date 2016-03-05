@@ -1,48 +1,48 @@
 package main;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Container;
+import drum.BorderLayoutLocation;
+import drum.DrumSet;
+import drum.DrumView;
 
-import javax.swing.JFrame;
+import java.awt.*;
 
-import drum.*;
+import javax.swing.*;
 
 public class DrumPlayer extends JFrame {
-	
-	public static Drum[][] drumArray = new Drum[4][2]; //4x2 array of drums
-	String drumpadIcon = "resources/images/drumpad.jpg"; //filename for button image
-	
-	/**
-	*
-	*@Standard constructor for DrumPlayer
-	*/
-	public DrumPlayer(){
-		super("DrumPlayer"); //add title to title bar
-		//instantiate each drum object
-		for(int i = 0; i<4; i++){
-			for(int j = 0; j<2; j++){
-				drumArray[i][j] = new Drum();
-			}
-		setBackground(Color.CYAN); //set background color
-		}
-		Container c = getContentPane();
-		//add various panels in BorderLayout
-		c.add(new DrumControl(), BorderLayout.NORTH);
-		c.add(new DrumSet(drumpadIcon), BorderLayout.CENTER);
-		c.add(new Welcome(), BorderLayout.SOUTH);
+
+    public DrumPlayer(){
+		super("DrumPlayer");
+    }
+
+    public void initializeFrame() {
+        setBackground(Color.CYAN);
+        buildViews(getContentPane());
+    }
+
+    private void buildViews(final Container container) {
+        final String drumPadIconPath = "/images/drumpad.jpg";
+        final DrumSet drumSet = new DrumSet(drumPadIconPath);
+        final DrumControl drumControl = new DrumControl(drumSet);
+        addViewToContainer(container, drumControl, BorderLayoutLocation.NORTH);
+        addViewToContainer(container, drumSet, BorderLayoutLocation.CENTER);
+        addViewToContainer(container, new Welcome(), BorderLayoutLocation.SOUTH);
+    }
+
+    private void addViewToContainer(Container c, DrumView view, BorderLayoutLocation borderLayout) {
+        view.initializeView();
+        c.add((Component)view, borderLayout.getBorderLayout());
+    }
+
+    public static void main(String[] args){
+        final DrumPlayer drumPlayer = new DrumPlayer();
+        initializeDrumPlayer(drumPlayer);
 	}
-	
-	/**
-	*
-	*@Main method for DrumPlayer project
-	*/
-	public static void main(String[] args){
-		//set up the GUI
-		final JFrame jFrame = new DrumPlayer();    
-		jFrame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-		jFrame.pack();
-		jFrame.setSize(1024,768);
-		jFrame.setVisible(true);
-	}
+
+    private static void initializeDrumPlayer(DrumPlayer drumPlayer) {
+        drumPlayer.initializeFrame();
+        drumPlayer.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        drumPlayer.pack();
+        drumPlayer.setSize(1024, 768);
+        drumPlayer.setVisible(true);
+    }
 }

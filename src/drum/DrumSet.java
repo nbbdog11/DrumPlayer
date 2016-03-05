@@ -1,123 +1,141 @@
 package drum;
 
-import java.awt.GridLayout;
+import javax.imageio.ImageIO;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
+public class DrumSet extends JPanel implements DrumView {
 
-import main.DrumPlayer;
+    private static final Collection<String> STANDARD_KITS;
 
-public class DrumSet extends JPanel {
-	
-	BufferedImage buttonIcon; //used to make button into an image
-	JButton button;
-	ActionHandler action = new ActionHandler();
-	
-	/**
-	*
-	*@Standard constructor for DrumSet class
-	*/
-	public DrumSet(String imageFile){
-		try {
-			this.buttonIcon = ImageIO.read(new File(imageFile)); //read image file to create icon for button
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		GridLayout layout = new GridLayout(2,4,0,0); //set grid layout for 4x2 configuration of pads
-		this.setLayout(layout);
-		
-		//adds the buttons to the panel, and adds listeners
-		for(int i = 0; i < 8; i++){
-			button = new JButton(new ImageIcon(buttonIcon));
-			button.setSize(230,272);
-			button.setBorder(BorderFactory.createEmptyBorder());
-			this.add(button);
-			button.addActionListener(action);
-			String buttonName = "button"+i;
-			button.setActionCommand(buttonName);
-		}
-	}
-	
-	/**
-	*
-	*@Update file path for each drum; dependent on dropdown list
-	*/
-	public static void updateDrums(String setName){
-		//sets sound clips based on drumset selected from dropdown
-		if(setName == "Acoustic"){
-			DrumPlayer.drumArray[0][0].setSoundClip("resources/audio/Acoustic/ClosedHat.wav");
-			DrumPlayer.drumArray[1][0].setSoundClip("resources/audio/Acoustic/ClosedHat2.wav");
-			DrumPlayer.drumArray[2][0].setSoundClip("resources/audio/Acoustic/OpenHat.wav");
-			DrumPlayer.drumArray[3][0].setSoundClip("resources/audio/Acoustic/PedalHat.wav");
-			DrumPlayer.drumArray[0][1].setSoundClip("resources/audio/Acoustic/Kick.wav");
-			DrumPlayer.drumArray[1][1].setSoundClip("resources/audio/Acoustic/Snare.wav");
-			DrumPlayer.drumArray[2][1].setSoundClip("resources/audio/Acoustic/Tom1.wav");
-			DrumPlayer.drumArray[3][1].setSoundClip("resources/audio/Acoustic/Tom2.wav");
-		}
-		if(setName == "Electro"){
-			DrumPlayer.drumArray[0][0].setSoundClip("resources/audio/Electro/ClosedHat.wav");
-			DrumPlayer.drumArray[1][0].setSoundClip("resources/audio/Electro/ClosedHat2.wav");
-			DrumPlayer.drumArray[2][0].setSoundClip("resources/audio/Electro/OpenHat.wav");
-			DrumPlayer.drumArray[3][0].setSoundClip("resources/audio/Electro/Ride.wav");
-			DrumPlayer.drumArray[0][1].setSoundClip("resources/audio/Electro/Kick.wav");
-			DrumPlayer.drumArray[1][1].setSoundClip("resources/audio/Electro/Snare.wav");
-			DrumPlayer.drumArray[2][1].setSoundClip("resources/audio/Electro/Tom1.wav");
-			DrumPlayer.drumArray[3][1].setSoundClip("resources/audio/Electro/Tom2.wav");
-		}
-		if(setName == "Kurzweil"){
-			DrumPlayer.drumArray[0][0].setSoundClip("resources/audio/Kurzweil/ClosedHat.wav");
-			DrumPlayer.drumArray[1][0].setSoundClip("resources/audio/Kurzweil/OpenHat.wav");
-			DrumPlayer.drumArray[2][0].setSoundClip("resources/audio/Kurzweil/Ride.wav");
-			DrumPlayer.drumArray[3][0].setSoundClip("resources/audio/Kurzweil/Crash.wav");
-			DrumPlayer.drumArray[0][1].setSoundClip("resources/audio/Kurzweil/Kick.wav");
-			DrumPlayer.drumArray[1][1].setSoundClip("resources/audio/Kurzweil/Snare.wav");
-			DrumPlayer.drumArray[2][1].setSoundClip("resources/audio/Kurzweil/Tom1.wav");
-			DrumPlayer.drumArray[3][1].setSoundClip("resources/audio/Kurzweil/Tom2.wav");
-		}
-		if(setName == "Vinyl"){
-			DrumPlayer.drumArray[0][0].setSoundClip("resources/audio/Vinyl/ClosedHat.wav");
-			DrumPlayer.drumArray[1][0].setSoundClip("resources/audio/Vinyl/ClosedHat2.wav");
-			DrumPlayer.drumArray[2][0].setSoundClip("resources/audio/Vinyl/OpenHat.wav");
-			DrumPlayer.drumArray[3][0].setSoundClip("resources/audio/Vinyl/Tambourine.wav");
-			DrumPlayer.drumArray[0][1].setSoundClip("resources/audio/Vinyl/Kick.wav");
-			DrumPlayer.drumArray[1][1].setSoundClip("resources/audio/Vinyl/Snare.wav");
-			DrumPlayer.drumArray[2][1].setSoundClip("resources/audio/Vinyl/Tambourine.wav");
-			DrumPlayer.drumArray[3][1].setSoundClip("resources/audio/Vinyl/Kick2.wav");
-		}
-		
-	}
-	
-	/**
-	*
-	*@ActionHandler for drum pad buttons. Plays sound clip on press
-	*/	
-	class ActionHandler implements ActionListener
-	{			   
-		//play sounds whenever a pad is clicked
-	 	public void actionPerformed(ActionEvent e) 
-	    {
-	 		String command = ((JButton)e.getSource()).getActionCommand();
-		    if(command.equals("button0"))
-		    	DrumPlayer.drumArray[0][0].playSound();
-		    if(command.equals("button1"))
-		    	DrumPlayer.drumArray[1][0].playSound();
-		    if(command.equals("button2"))
-		    	DrumPlayer.drumArray[2][0].playSound();
-		    if(command.equals("button3"))
-		    	DrumPlayer.drumArray[3][0].playSound();
-		    if(command.equals("button4"))
-		    	DrumPlayer.drumArray[0][1].playSound();
-		    if(command.equals("button5"))
-		    	DrumPlayer.drumArray[1][1].playSound();
-		    if(command.equals("button6"))
-		    	DrumPlayer.drumArray[2][1].playSound();
-		    if(command.equals("button7"))
-		    	DrumPlayer.drumArray[3][1].playSound();	
-	    } // close actionperformed
-	} //close ActionHandler
+    private final DrumPadRegistry drumPadRegistry;
+    private final String imageFilePath;
+    private final ActionHandler actionHandler;
+
+    static {
+        STANDARD_KITS = new HashSet<>(3);
+        STANDARD_KITS.add("Acoustic");
+        STANDARD_KITS.add("Electro");
+        STANDARD_KITS.add("Kurzweil");
+    }
+
+    public DrumSet(String imageFile) {
+        this(new DrumPadRegistry(), imageFile);
+    }
+
+    public DrumSet(DrumPadRegistry drumPadRegistry, String imageFilePath){
+        this.drumPadRegistry = drumPadRegistry;
+        this.imageFilePath = imageFilePath;
+        this.actionHandler = new ActionHandler(drumPadRegistry);
+    }
+
+    @Override
+    public void initializeView() {
+        final int rows = 2;
+        final int cols = 4;
+        this.setLayout(buildGridLayout(rows, cols, 0, 0));
+
+        int totalButtons = 8;
+        for(int i = 0; i < totalButtons; i++){
+            buildAndInitializeButton(i);
+        }
+    }
+
+    private void buildAndInitializeButton(int buttonNumber) {
+        initializeButtonValues(constructButtonWithImage(), buttonNumber);
+    }
+
+    private void initializeButtonValues(final JButton button,
+                                        final int buttonNumber) {
+        final int buttonWidth = 230;
+        final int buttonHeight = 272;
+        button.setSize(buttonWidth, buttonHeight);
+        button.setBorder(getEmptyBorder());
+        button.addActionListener(actionHandler);
+        this.add(button);
+        final String buttonName = "button"+ buttonNumber;
+        button.setActionCommand(buttonName);
+    }
+
+    private JButton constructButtonWithImage() {
+        BufferedImage buttonIcon;
+        try {
+            buttonIcon = ImageIO.read(new File(System.getProperty("user.dir") + imageFilePath)); //read image file to create icon for button
+            return new JButton(new ImageIcon(buttonIcon));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Border getEmptyBorder() {
+        return BorderFactory.createEmptyBorder();
+    }
+
+    private GridLayout buildGridLayout(int rows, int columns, int hgap, int vgap) {
+        return new GridLayout(rows, columns, hgap, vgap);
+    }
+
+    public void updateDrums(final String kitName){
+        if (STANDARD_KITS.contains(kitName)) {
+            loadStandardKit(kitName);
+        }
+        if("Vinyl".equals(kitName)){
+            loadVinylKit();
+        }
+    }
+
+    private void loadStandardKit(String kitName) {
+        loadPadWithSoundClip("button0", "/audio/" + kitName + "/ClosedHat.wav");
+        loadPadWithSoundClip("button1", "/audio/" + kitName + "/ClosedHat2.wav");
+        loadPadWithSoundClip("button2", "/audio/" + kitName + "/OpenHat.wav");
+        loadPadWithSoundClip("button3", "/audio/" + kitName + "/PedalHat.wav");
+        loadPadWithSoundClip("button4", "/audio/" + kitName + "/Kick.wav");
+        loadPadWithSoundClip("button5", "/audio/" + kitName + "/Snare.wav");
+        loadPadWithSoundClip("button6", "/audio/" + kitName + "/Tom1.wav");
+        loadPadWithSoundClip("button7", "/audio/" + kitName + "/Tom2.wav");
+    }
+
+    private void loadPadWithSoundClip(final String padName,
+                                      final String filename) {
+        drumPadRegistry.getPadOrDefault(padName, new Drum()).setSoundClipFileName(filename);
+    }
+
+    private void loadVinylKit() {
+        loadPadWithSoundClip("button0", "/audio/Vinyl/ClosedHat.wav");
+        loadPadWithSoundClip("button1", "/audio/Vinyl/ClosedHat2.wav");
+        loadPadWithSoundClip("button2", "/audio/Vinyl/OpenHat.wav");
+        loadPadWithSoundClip("button3", "/audio/Vinyl/Tambourine.wav");
+        loadPadWithSoundClip("button4", "/audio/Vinyl/Kick.wav");
+        loadPadWithSoundClip("button5", "/audio/Vinyl/Snare.wav");
+        loadPadWithSoundClip("button6", "/audio/Vinyl/Tambourine.wav");
+        loadPadWithSoundClip("button7", "/audio/Vinyl/Kick2.wav");
+    }
+
+    private static class ActionHandler implements ActionListener {
+
+        private final DrumPadRegistry drumPadRegistry;
+
+        public ActionHandler(DrumPadRegistry drumPadRegistry) {
+            this.drumPadRegistry = drumPadRegistry;
+        }
+
+        public void actionPerformed(final ActionEvent evt) {
+            final String command = ((JButton) evt.getSource()).getActionCommand();
+            handleCommand(command);
+        }
+
+        private void handleCommand(final String padName) {
+            drumPadRegistry.getPad(padName).playSound();
+        }
+    }
 }
