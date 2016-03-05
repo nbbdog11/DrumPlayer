@@ -1,52 +1,26 @@
 package drum;
 
-import java.io.*;
-
-import javax.sound.sampled.*;
+import drum.resource.AudioClipHelper;
 
 public class Drum implements DrumInterface {
+
+    private final AudioClipHelper audioClipHelper;
+    private String soundClipFileName;
 	
-	private String soundClipFileName;
-	
-	public Drum(){
-		this.soundClipFileName = "";
-	}
+	public Drum(final AudioClipHelper audioClipHelper){
+        this.audioClipHelper = audioClipHelper;
+        this.soundClipFileName = "";
+    }
 
 	@Override
-	public void setSoundClipFileName(final String filename){
-		soundClipFileName = System.getProperty("user.dir") + filename;
+	public void setSoundClipFileName(final String soundClipFileName){
+		this.soundClipFileName = soundClipFileName;
 	}
 
     @Override
 	public void playSound(){
-        try {
-            prepareClip(AudioSystem.getClip()).start();
-		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-			e.printStackTrace();
-		}
+        audioClipHelper.playClip(this.soundClipFileName);
 	}
 
-    private Clip prepareClip(final Clip clip) throws LineUnavailableException,
-                                                     IOException,
-                                                     UnsupportedAudioFileException {
-        clip.open(getAudioInputStream());
-        setGainValue(clip, +5.0f);
-        return clip;
-    }
 
-    private AudioInputStream getAudioInputStream() throws UnsupportedAudioFileException,
-                                                          IOException {
-        return AudioSystem.getAudioInputStream(getAudioFile());
-    }
-
-    private File getAudioFile() {
-        return new File(this.soundClipFileName);
-    }
-
-    private void setGainValue(final Clip clip,
-                              final float gainValue) {
-        final FloatControl gainControl =
-                (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-        gainControl.setValue(gainValue);
-    }
 }

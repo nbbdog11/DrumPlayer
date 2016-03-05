@@ -1,4 +1,7 @@
-package drum;
+package drum.registry;
+
+import drum.DrumInterface;
+import drum.NullDrum;
 
 import java.util.HashMap;
 import java.util.Map;

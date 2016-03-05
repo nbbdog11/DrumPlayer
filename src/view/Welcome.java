@@ -1,6 +1,4 @@
-package main;
-
-import drum.DrumView;
+package view;
 
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;

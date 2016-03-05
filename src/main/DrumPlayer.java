@@ -1,8 +1,9 @@
 package main;
 
-import drum.BorderLayoutLocation;
-import drum.DrumSet;
-import drum.DrumView;
+import drum.kitloader.DrumKitLoaderFactory;
+import drum.registry.DrumPadRegistry;
+import drum.resource.ResourceFileLocator;
+import view.*;
 
 import java.awt.*;
 
@@ -21,14 +22,25 @@ public class DrumPlayer extends JFrame {
 
     private void buildViews(final Container container) {
         final String drumPadIconPath = "/images/drumpad.jpg";
-        final DrumSet drumSet = new DrumSet(drumPadIconPath);
-        final DrumControl drumControl = new DrumControl(drumSet);
+        final ResourceFileLocator resourceFileLocator = new ResourceFileLocator();
+        final DrumSet drumSet = buildDrumSet(resourceFileLocator, drumPadIconPath);
+        final DrumControl drumControl = new DrumControl(drumSet, resourceFileLocator);
         addViewToContainer(container, drumControl, BorderLayoutLocation.NORTH);
         addViewToContainer(container, drumSet, BorderLayoutLocation.CENTER);
         addViewToContainer(container, new Welcome(), BorderLayoutLocation.SOUTH);
     }
 
-    private void addViewToContainer(Container c, DrumView view, BorderLayoutLocation borderLayout) {
+    private DrumSet buildDrumSet(final ResourceFileLocator resourceFileLocator,
+                                 final String drumPadIconPath) {
+        return new DrumSet(new DrumPadRegistry(),
+                           new DrumKitLoaderFactory(),
+                           resourceFileLocator,
+                           drumPadIconPath);
+    }
+
+    private void addViewToContainer(final Container c,
+                                    final DrumView view,
+                                    final BorderLayoutLocation borderLayout) {
         view.initializeView();
         c.add((Component)view, borderLayout.getBorderLayout());
     }

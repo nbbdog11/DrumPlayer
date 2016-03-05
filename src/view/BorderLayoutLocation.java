@@ -1,4 +1,4 @@
-package drum;
+package view;
 
 import java.awt.BorderLayout;
 
@@ -11,7 +11,6 @@ public enum BorderLayoutLocation {
     private final String borderLayout;
 
     BorderLayoutLocation(final String borderLayout) {
-
         this.borderLayout = borderLayout;
     }
 
