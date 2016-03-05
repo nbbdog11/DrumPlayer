@@ -1,5 +1,6 @@
 package view;
 
+import drum.registry.DrumSets;
 import drum.resource.ResourceFileLocator;
 import view.action.DrumControlComboBoxHandler;
 import view.action.DrumSetComboBoxHelper;
@@ -23,8 +24,7 @@ public class DrumControl extends Container implements DrumView {
 	static String[] trackNames = {"Get Lucky - Daft Punk ft. Pharrell Williams","Thrift Shop - Macklemore ft. Ryan Lewis","Levels (Skrillex Remix) - Avicii "};
 	static int count = 0;
 	static String track = backTracks[0];
-	static String[] drumSets = {"Acoustic","Electro","Kurzweil","Vinyl"}; //array of drumset options for combobox
-	static JComboBox setSelector = new JComboBox(drumSets); //create combobox
+    static JComboBox setSelector = new JComboBox(DrumSets.drumSetNames().toArray(new String[]{})); //create combobox
 	static JLabel trackLabel = new JLabel();
 	private final DrumSet drumSet;
     private final ResourceFileLocator resourceFileLocator;
@@ -44,8 +44,8 @@ public class DrumControl extends Container implements DrumView {
     public DrumControl(final DrumSet drumSet,
                        final ResourceFileLocator resourceFileLocator){
 		this.drumSet = drumSet;
-		this.combo = new DrumControlComboBoxHandler(drumSet);
         this.resourceFileLocator = resourceFileLocator;
+        this.combo = new DrumControlComboBoxHandler(drumSet);
     }
 
 	@Override
