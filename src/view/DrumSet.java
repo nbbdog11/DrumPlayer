@@ -1,7 +1,6 @@
 package view;
 
 import drum.kitloader.DrumKitLoader;
-import drum.kitloader.DrumKitLoaderFactory;
 import drum.registry.DrumPadRegistry;
 import drum.resource.AudioClipHelper;
 import drum.resource.ResourceFileLocator;
@@ -16,22 +15,19 @@ import java.io.IOException;
 
 public class DrumSet extends JPanel implements DrumView {
 
-    private final DrumPadRegistry drumPadRegistry;
-    private final DrumKitLoaderFactory drumKitLoaderFactory;
     private final ResourceFileLocator resourceFileLocator;
     private final String imageFilePath;
 
     private final DrumSetActionHandler actionHandler;
+    private final DrumKitLoader drumKitLoader;
 
     public DrumSet(final DrumPadRegistry drumPadRegistry,
-                   final DrumKitLoaderFactory drumKitLoaderFactory,
                    final ResourceFileLocator resourceFileLocator,
                    final String imageFilePath){
-        this.drumPadRegistry = drumPadRegistry;
-        this.drumKitLoaderFactory = drumKitLoaderFactory;
         this.resourceFileLocator = resourceFileLocator;
         this.imageFilePath = imageFilePath;
         this.actionHandler = new DrumSetActionHandler(drumPadRegistry);
+        this.drumKitLoader = new DrumKitLoader(drumPadRegistry, new AudioClipHelper(resourceFileLocator));
     }
 
     @Override
@@ -82,8 +78,6 @@ public class DrumSet extends JPanel implements DrumView {
     }
 
     public void updateDrums(final String kitName){
-        DrumKitLoader drumKitLoader = drumKitLoaderFactory.get(kitName, drumPadRegistry, new AudioClipHelper(resourceFileLocator));
-        drumKitLoader.loadKit();
+        drumKitLoader.loadKit(kitName);
     }
-
 }

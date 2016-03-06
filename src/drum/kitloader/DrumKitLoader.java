@@ -5,7 +5,9 @@ import drum.DrumInterface;
 import drum.registry.DrumPadRegistry;
 import drum.resource.AudioClipHelper;
 
-public abstract class DrumKitLoader {
+import java.io.Serializable;
+
+public class DrumKitLoader implements Serializable {
 
     private final DrumPadRegistry drumPadRegistry;
     private final AudioClipHelper audioClipHelper;
@@ -14,12 +16,17 @@ public abstract class DrumKitLoader {
                          final AudioClipHelper audioClipHelper) {
         this.drumPadRegistry = drumPadRegistry;
         this.audioClipHelper = audioClipHelper;
+
     }
 
-    public abstract void loadKit();
+    public void loadKit(final String kitName) {
+        for (int i = 0; i < 8; i++) {
+            loadPadWithSoundClip("button" + i, "/audio/" + kitName + "/Pad" + i + ".wav");
+        }
+    }
 
-    public void loadPadWithSoundClip(final String padName,
-                                     final String filename) {
+    private void loadPadWithSoundClip(final String padName,
+                                      final String filename) {
         final DrumInterface drumPad = drumPadRegistry.getPadOrDefault(padName, new Drum(audioClipHelper));
         drumPad.setSoundClipFileName(filename);
     }

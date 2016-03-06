@@ -1,6 +1,5 @@
 package main;
 
-import drum.kitloader.DrumKitLoaderFactory;
 import drum.registry.DrumPadRegistry;
 import drum.resource.AudioClipHelper;
 import drum.resource.BackTrackFacade;
@@ -35,8 +34,7 @@ public class DrumPlayer extends JFrame {
     private DrumSet buildDrumSet(final ResourceFileLocator resourceFileLocator,
                                  final String drumPadIconPath) {
         return new DrumSet(new DrumPadRegistry(),
-                           new DrumKitLoaderFactory(),
-                           resourceFileLocator,
+                resourceFileLocator,
                            drumPadIconPath);
     }
 
