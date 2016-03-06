@@ -1,40 +1,36 @@
 package view;
 
 import drum.registry.DrumSets;
-import drum.resource.ResourceFileLocator;
+import drum.resource.AudioClipHelper;
+import drum.resource.BackTrack;
+import drum.resource.BackTrackFacade;
 import view.action.DrumControlComboBoxHandler;
 import view.action.DrumSetComboBoxHelper;
 
-import java.awt.Container;
-import java.awt.event.*;
-import java.io.File;
-import java.io.IOException;
-
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
 
 public class DrumControl extends Container implements DrumView {
-	
-	//arrays for track files and track names
-	static String[] backTracks = {"/audio/Tracks/getlucky.wav","/audio/Tracks/thriftshop.wav","/audio/Tracks/levels.wav"};
-	static String[] trackNames = {"Get Lucky - Daft Punk ft. Pharrell Williams","Thrift Shop - Macklemore ft. Ryan Lewis","Levels (Skrillex Remix) - Avicii "};
-	static int count = 0;
-	static String track = backTracks[0];
-    static JComboBox setSelector = new JComboBox(DrumSets.drumSetNames().toArray(new String[]{})); //create combobox
-	static JLabel trackLabel = new JLabel();
-	private final DrumSet drumSet;
-    private final ResourceFileLocator resourceFileLocator;
+
+    static JComboBox<String> setSelector = buildDrumSetsSelector(); //create combobox
+
+    static JLabel trackLabel = new JLabel();
+
+    private final DrumSet drumSet;
+    private final BackTrackFacade backTrackFacade;
+    private final InterfaceComponentInitializer componentInitializer;
+    private final AudioClipHelper audioClipHelper;
+
+    private final String playButtonText = "Play Next Backing Track";
     Clip clip;
-	
-	//declare handlers for button and combobox
-	ActionHandler action = new ActionHandler();
-	final DrumControlComboBoxHandler combo;
-	
-	static String selectedItem = getDefaultDrumKit(); //intialize selectedItem so first set is loaded
 
     private static String getDefaultDrumKit() {
         setSelector.setSelectedIndex(0);
@@ -42,74 +38,74 @@ public class DrumControl extends Container implements DrumView {
     }
 
     public DrumControl(final DrumSet drumSet,
-                       final ResourceFileLocator resourceFileLocator){
+                       final BackTrackFacade backTrackFacade,
+                       final InterfaceComponentInitializer componentInitializer,
+                       final AudioClipHelper audioClipHelper){
 		this.drumSet = drumSet;
-        this.resourceFileLocator = resourceFileLocator;
-        this.combo = new DrumControlComboBoxHandler(drumSet);
+        this.backTrackFacade = backTrackFacade;
+        this.componentInitializer = componentInitializer;
+        this.audioClipHelper = audioClipHelper;
     }
 
 	@Override
 	public void initializeView() {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS)); //set boxlayout to center items
-		drumSet.updateDrums(selectedItem); //loads the first drumset
-        final JButton playButton = new JButton("Play Next Backing Track");
-        playButton.addActionListener(action); //adds listener to play button
-		setSelector.addItemListener(combo); //adds listener for combobox
+		loadDefaultDrumKit(); //loads the first drumset
+        final JButton playButton = new JButton(playButtonText);
+        playButton.addActionListener(new ActionHandler()); //adds listener to play button
+        setUpSetSelector();
 
-		//Center the elements and constrain combobox size
-        centerAlignComponent(trackLabel);
-        centerAlignComponent(playButton);
-		centerAlignComponent(setSelector);
-		setSelector.setMaximumSize(setSelector.getPreferredSize());
+        final Collection<JComponent> components = Arrays.asList(trackLabel, playButton, setSelector);
+        componentInitializer.setUpInterfaceComponents(components, this);
 
-		//add components to panel
-		this.add(trackLabel, this);
-		this.add(playButton, this);
-		this.add(setSelector, this);
-		AudioInputStream audio; //create an AudioInputStream for sound playback
-		File file = getTrackFile(track);
-		try {
-			audio = AudioSystem.getAudioInputStream(file);
-			clip = AudioSystem.getClip(); //create audio Clip
-			clip.open(audio); //open the AudioInputStream
-		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-			e.printStackTrace();
-		}
+//		clip = prepareClipWithBackTrack(backTrackFacade.getNext());
 	}
 
-    public void centerAlignComponent(JComponent component) {
-        component.setAlignmentX(Container.CENTER_ALIGNMENT);
+    private void setUpSetSelector() {
+        setSelector.addItemListener(new DrumControlComboBoxHandler(drumSet)); //adds listener for combobox
+        setSelector.setMaximumSize(setSelector.getPreferredSize());
+    }
+
+    private void loadDefaultDrumKit() {
+        drumSet.updateDrums(getDefaultDrumKit());
+    }
+
+    private static JComboBox<String> buildDrumSetsSelector() {
+        final Collection<String> drumSetNames = DrumSets.drumSetNames();
+        return new JComboBox<>(drumSetNames.toArray(new String[drumSetNames.size()]));
     }
 
     private class ActionHandler implements ActionListener{
-		@Override
+        @Override
 		public void actionPerformed(ActionEvent event) {
-			if(event.getActionCommand().equals("Play Next Backing Track")){
-				track = backTracks[count];
-				trackLabel.setText(trackNames[count]);
-				if(count < 2)
-					count++;
-				else
-					count = 0;
-				AudioInputStream audio; //create an AudioInputStream for sound playback
-				File file = getTrackFile(track); //instantiate File object from sound file
-				try {
-					if(clip.isRunning()){ //stop previous clip if it is still running
-						clip.stop();
-					}
-					audio = AudioSystem.getAudioInputStream(file);
-					clip = AudioSystem.getClip(); //create audio Clip
-			        clip.open(audio); //open the AudioInputStream
-			        clip.loop(5); //play the sound clip	
-				} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-					e.printStackTrace();
-				}
+			if(event.getActionCommand().equals(playButtonText)){
+                handlePlayCommand();
             }
 		}
-	}
 
-    public File getTrackFile(String track) {
-        return resourceFileLocator.findFileFromRelativePath(track);
+        private void handlePlayCommand() {
+            final BackTrack track = backTrackFacade.getNext();
+            trackLabel.setText(track.getName());
+            try {
+                setNewBackTrack(track);
+            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void setNewBackTrack(BackTrack track) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+        if (clip != null) {
+            if(clip.isRunning()) {
+                clip.stop();
+            }
+        }
+        clip = prepareClipWithBackTrack(track);
+        clip.loop(5);
+    }
+
+    private Clip prepareClipWithBackTrack(BackTrack track) {
+        return audioClipHelper.prepareClip(track.getFilePath());
     }
 
 }

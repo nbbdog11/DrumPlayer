@@ -82,7 +82,7 @@ public class DrumSet extends JPanel implements DrumView {
     }
 
     public void updateDrums(final String kitName){
-        DrumKitLoader drumKitLoader = drumKitLoaderFactory.get(kitName, drumPadRegistry, new AudioClipHelper());
+        DrumKitLoader drumKitLoader = drumKitLoaderFactory.get(kitName, drumPadRegistry, new AudioClipHelper(resourceFileLocator));
         drumKitLoader.loadKit();
     }
 

@@ -8,15 +8,23 @@ public class AudioClipHelper {
 
     private final ResourceFileLocator resourceFileLocator;
 
-    public AudioClipHelper() {
-        resourceFileLocator = new ResourceFileLocator();
+    public AudioClipHelper(ResourceFileLocator resourceFileLocator) {
+        this.resourceFileLocator = resourceFileLocator;
     }
 
     public void playClip(final String soundClipFileName) {
-        final Clip preparedClip = prepareClip(soundClipFileName);
+        final Clip preparedClip = prepareClipWithGain(soundClipFileName, +5.0f);
         if (preparedClip != null) {
             preparedClip.start();
         }
+    }
+
+    public Clip prepareClipWithGain(final String soundClipFileName, float gainValue) {
+        final Clip clip = prepareClip(soundClipFileName);
+        if (clip != null) {
+            setGainValue(clip, gainValue);
+        }
+        return clip;
     }
 
     public Clip prepareClip(final String soundClipFileName) {
@@ -24,7 +32,6 @@ public class AudioClipHelper {
         try {
             clip = AudioSystem.getClip();
             clip.open(getAudioInputStream(soundClipFileName));
-            setGainValue(clip, +5.0f);
             return clip;
         } catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
             e.printStackTrace();

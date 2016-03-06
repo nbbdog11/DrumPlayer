@@ -2,6 +2,8 @@ package main;
 
 import drum.kitloader.DrumKitLoaderFactory;
 import drum.registry.DrumPadRegistry;
+import drum.resource.AudioClipHelper;
+import drum.resource.BackTrackFacade;
 import drum.resource.ResourceFileLocator;
 import view.*;
 
@@ -24,7 +26,7 @@ public class DrumPlayer extends JFrame {
         final String drumPadIconPath = "/images/drumpad.jpg";
         final ResourceFileLocator resourceFileLocator = new ResourceFileLocator();
         final DrumSet drumSet = buildDrumSet(resourceFileLocator, drumPadIconPath);
-        final DrumControl drumControl = new DrumControl(drumSet, resourceFileLocator);
+        final DrumControl drumControl = new DrumControl(drumSet, new BackTrackFacade(), new InterfaceComponentInitializer(), new AudioClipHelper(resourceFileLocator));
         addViewToContainer(container, drumControl, BorderLayoutLocation.NORTH);
         addViewToContainer(container, drumSet, BorderLayoutLocation.CENTER);
         addViewToContainer(container, new Welcome(), BorderLayoutLocation.SOUTH);
