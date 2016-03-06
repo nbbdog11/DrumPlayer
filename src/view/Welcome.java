@@ -1,5 +1,7 @@
 package view;
 
+import main.DrumPlayerConstants;
+
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,28 +13,22 @@ import javax.swing.JPanel;
 
 public class Welcome extends JPanel implements DrumView {
 
-    protected JButton helpButton = new JButton("Help");
-	private ActionHandler action = new ActionHandler();
-
 	@Override
 	public void initializeView() {
-		this.add(new JLabel("Welcome to the DrumPlayer"));
-		helpButton.addActionListener(action);
+		this.add(new JLabel(DrumPlayerConstants.WELCOME_LABEL));
+		final JButton helpButton = new JButton(DrumPlayerConstants.HELP_BUTTON_TEXT);
+		helpButton.addActionListener(new ActionHandler());
 		this.add(helpButton);
 	}
 
 	private class ActionHandler implements ActionListener{
 
-        private final String helpString = "Click on a pad to play a drum sample.\nClick the \"Play Backing Track\" button " +
-                "to play a track to help you groove.\nYou can select what set you want to jam with " +
-                "by selecting one of the options from the dropdown above.";
-
-        @Override
+		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(e.getActionCommand().equals("Help")){
+			if(e.getActionCommand().equals(DrumPlayerConstants.HELP_BUTTON_TEXT)){
 				Toolkit.getDefaultToolkit().beep();
-                JOptionPane.showMessageDialog (null, helpString,
-			               "INSTRUCTIONS", JOptionPane.INFORMATION_MESSAGE );
+                JOptionPane.showMessageDialog (null, DrumPlayerConstants.HELP_STRING,
+						DrumPlayerConstants.HELP_BOX_TITLE, JOptionPane.INFORMATION_MESSAGE );
 			}
 			
 		}

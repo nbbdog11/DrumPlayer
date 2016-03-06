@@ -1,9 +1,8 @@
 package view;
 
 import drum.kitloader.DrumKitLoader;
-import drum.registry.DrumPadRegistry;
-import drum.resource.AudioClipHelper;
 import drum.resource.ResourceFileLocator;
+import main.DrumPlayerConstants;
 import view.action.DrumSetActionHandler;
 
 import javax.imageio.ImageIO;
@@ -15,29 +14,26 @@ import java.io.IOException;
 
 public class DrumSet extends JPanel implements DrumView {
 
+    private final DrumSetActionHandler actionHandler;
+    private final DrumKitLoader drumKitLoader;
     private final ResourceFileLocator resourceFileLocator;
     private final String imageFilePath;
 
-    private final DrumSetActionHandler actionHandler;
-    private final DrumKitLoader drumKitLoader;
-
-    public DrumSet(final DrumPadRegistry drumPadRegistry,
+    public DrumSet(final DrumSetActionHandler actionHandler,
+                   final DrumKitLoader drumKitLoader,
                    final ResourceFileLocator resourceFileLocator,
                    final String imageFilePath){
+        this.actionHandler = actionHandler;
+        this.drumKitLoader = drumKitLoader;
         this.resourceFileLocator = resourceFileLocator;
         this.imageFilePath = imageFilePath;
-        this.actionHandler = new DrumSetActionHandler(drumPadRegistry);
-        this.drumKitLoader = new DrumKitLoader(drumPadRegistry, new AudioClipHelper(resourceFileLocator));
     }
 
     @Override
     public void initializeView() {
-        final int rows = 2;
-        final int cols = 4;
-        this.setLayout(buildGridLayout(rows, cols, 0, 0));
+        this.setLayout(buildGridLayout(DrumPlayerConstants.PAD_ROW_COUNT, DrumPlayerConstants.PAD_COLUMN_COUNT, 0, 0));
 
-        int totalButtons = 8;
-        for(int i = 0; i < totalButtons; i++){
+        for(int i = 0; i < DrumPlayerConstants.NUMBER_OF_PADS; i++){
             buildAndInitializeButton(i);
         }
     }
@@ -48,9 +44,7 @@ public class DrumSet extends JPanel implements DrumView {
 
     private void initializeButtonValues(final JButton button,
                                         final int buttonNumber) {
-        final int buttonWidth = 230;
-        final int buttonHeight = 272;
-        button.setSize(buttonWidth, buttonHeight);
+        button.setSize(DrumPlayerConstants.PAD_WIDTH, DrumPlayerConstants.PAD_HEIGHT);
         button.setBorder(getEmptyBorder());
         button.addActionListener(actionHandler);
         this.add(button);

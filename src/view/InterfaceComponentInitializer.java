@@ -6,8 +6,6 @@ import java.io.Serializable;
 import java.util.Collection;
 
 public class InterfaceComponentInitializer implements Serializable {
-    public InterfaceComponentInitializer() {
-    }
 
     public void setUpInterfaceComponents(final Collection<JComponent> components,
                                          final Container container) {

@@ -1,4 +1,6 @@
-package drum.resource;
+package drum.audio;
+
+import drum.resource.ResourceFileLocator;
 
 import javax.sound.sampled.*;
 import java.io.File;
@@ -8,18 +10,20 @@ public class AudioClipHelper {
 
     private final ResourceFileLocator resourceFileLocator;
 
-    public AudioClipHelper(ResourceFileLocator resourceFileLocator) {
+    public AudioClipHelper(final ResourceFileLocator resourceFileLocator) {
         this.resourceFileLocator = resourceFileLocator;
     }
 
-    public void playClip(final String soundClipFileName) {
-        final Clip preparedClip = prepareClipWithGain(soundClipFileName, +5.0f);
+    public void playClip(final String soundClipFileName,
+                         final float gainValue) {
+        final Clip preparedClip = prepareClipWithGain(soundClipFileName, gainValue);
         if (preparedClip != null) {
             preparedClip.start();
         }
     }
 
-    public Clip prepareClipWithGain(final String soundClipFileName, float gainValue) {
+    public Clip prepareClipWithGain(final String soundClipFileName,
+                                    final float gainValue) {
         final Clip clip = prepareClip(soundClipFileName);
         if (clip != null) {
             setGainValue(clip, gainValue);

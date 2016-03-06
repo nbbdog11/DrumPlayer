@@ -1,4 +1,4 @@
-package drum.resource;
+package drum.audio;
 
 import java.util.Arrays;
 

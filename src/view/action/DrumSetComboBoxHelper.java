@@ -4,7 +4,7 @@ import javax.swing.JComboBox;
 
 public class DrumSetComboBoxHelper {
 
-    public static String getSelectedSet(JComboBox cb) {
+    public static String getSelectedSet(final JComboBox cb) {
         return (String) cb.getSelectedItem();
     }
 }

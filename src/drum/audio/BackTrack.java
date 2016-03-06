@@ -1,4 +1,4 @@
-package drum.resource;
+package drum.audio;
 
 public enum BackTrack {
 
